@@ -1,13 +1,13 @@
 import random
 
-k = [10, 20, 40, 80, 160, 320, 640, 1280, 2560]
-n = 20
+k = [10, 20, 40, 80, 160, 320, 640, 1000]
+n = 1
 numbers = []
 
 random.seed(0xf00d)
 
 for i in range(n):
-    for l in k:
+    for l in range(1, 3001, 1):
         num = ""
         for j in range(l):
             t = random.randint(0,9)
