@@ -18,26 +18,13 @@ int main() {
 
     string input;
 
-    while (cin >> input) {
-        numbers.push_back(input);
-    }
+    cin >> input;
 
-    cout << "n_digits;median(ns);min(ns);max(ns)\n";
-
-    for (auto &s: numbers) {
-        vector<uint64_t> laps;
-        mpz_set_str(possibly_prime, s.c_str(), 10);
-        for (int i = 0; i < 20; ++i) {
-            auto start = chrono::system_clock::now();
-            local::primality_test(possibly_prime, composite_witness);
-            laps.push_back(chrono::duration_cast<chrono::nanoseconds>(chrono::system_clock::now() - start).count());
-        }
-        assert(laps.size() == 20);
-        sort(laps.begin(), laps.end());
-        cout << s.size() << ';' << ((laps[laps.size() / 2] + laps[laps.size() / 2 - 1]) / 2) << ';' << laps[0] << ';'
-             << laps[19] << '\n';
-        laps.clear();
-    }
+    mpz_set_str(possibly_prime, input.c_str(), 10);
+    if (local::primality_test(possibly_prime, composite_witness))
+        cout << "s\n";
+    else
+        cout << "n\n";
 
     return 0;
 }

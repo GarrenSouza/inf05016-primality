@@ -64,7 +64,7 @@ namespace local {
         // if (a^u)^(2^i) is congruent to -1 for any i in [0, t -1] -> yes
         mpz_set(i, zero);
         for (; mpz_cmp(i, t) < 0; mpz_add_ui(i, i, 1))
-            if (mpz_cmp_si(rop1, -1) == 0)
+            if (mpz_cmp(rop1, rop2) == 0) // this because -1 mod n = n - 1 (which in this cas is rop2, as rop2 = n-1)
                 return true;
             else
                 mpz_powm_ui(rop1, rop1, 2, n);
