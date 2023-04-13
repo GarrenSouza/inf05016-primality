@@ -5,8 +5,8 @@
 namespace local {
 
     gmp_randstate_t __state;
-    mpz_t zero, one, two;
-    mpz_t  u, rop1, rop2, t, i, c;
+    mpz_t zero, one, two, mone;
+    mpz_t u, rop1, rop2, t, i, c, comp;
 
     pt_prov prov;
 
@@ -15,6 +15,9 @@ namespace local {
         mpz_init_set_ui(zero, 0);
         mpz_init_set_ui(one, 1);
         mpz_init_set_ui(two, 2);
+
+        mpz_init_set_ui(comp, 0);
+
         mpz_init(prov.a);
         mpz_init(prov.t);
         mpz_init(prov.u);
@@ -39,36 +42,37 @@ namespace local {
         }
     }
 
-    bool primality_test(mpz_t &n, mpz_t &a) {
+    void primality_test(mpz_t &n, mpz_t &a) {
+        mpz_set_ui(comp, 0);
+        for (mpz_set_ui(c, 0); mpz_cmp(c, n - 1); mpz_add_ui(c, c, 1)) {// 'a' is a random number in the range [0, n-1]
+            do {
+                mpz_urandomm(a, __state, n);
+            } while (mpz_cmp_ui(a, 0) == 0);
 
+            // gcd(a, n) != 1 test
+            mpz_gcd(rop1, n, a);
+            if (mpz_cmp(rop1, one) != 0)
+                mpz_add_ui(comp, comp, 1);
 
-        // 'a' is a random number in the range [0, n-1]
-        do {
-            mpz_urandomm(a, __state, n);
-        } while (mpz_cmp_ui(a, 0) == 0);
+            // n - 1 = 2^t*u
+            mpz_sub_ui(rop2, n, 1); // rop2 = n - 1
+            factor(rop2, t, u);
 
-        // gcd(a, n) != 1 test
-        mpz_gcd(rop1, n, a);
-        if (mpz_cmp(rop1, one) != 0)
-            return false;
+            // if a^u is congruent to 1 mod n -> yes
+            mpz_powm(rop1, a, u, n);
+            if (mpz_cmp(rop1, one) == 0)
+                break;
 
-        // n - 1 = 2^t*u
-        mpz_sub_ui(rop2, n, 1); // rop2 = n - 1
-        factor(rop2, t, u);
+            // if (a^u)^(2^i) is congruent to -1 for any i in [0, t -1] -> yes
+            mpz_set(i, zero);
+            for (; mpz_cmp(i, t) < 0; mpz_add_ui(i, i, 1))
+                if (mpz_cmp_ui(rop1, -1) == 0)
+                    break;
+                else
+                    mpz_powm_ui(rop1, rop1, 2, n);
 
-        // if a^u is congruent to 1 mod n -> yes
-        mpz_powm(rop1, a, u, n);
-        if (mpz_cmp(rop1, one) == 0)
-            return true;
-
-        // if (a^u)^(2^i) is congruent to -1 for any i in [0, t -1] -> yes
-        mpz_set(i, zero);
-        for (; mpz_cmp(i, t) < 0; mpz_add_ui(i, i, 1))
-            if (mpz_cmp(rop1, rop2) == 0)
-                return true;
-            else
-                mpz_powm_ui(rop1, rop1, 2, n);
-
-        return false;
+            mpz_add_ui(comp, comp, 1);
+        }
+        mpz_set(a, comp);
     }
 }
