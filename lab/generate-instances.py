@@ -14,5 +14,8 @@ for i in range(n):
             if j == 0:
                 while t == 0:
                     t = random.randint(0,9)
+            elif j == (l - 1):
+                while t % 2 == 0:
+                    t = random.randint(0,9)
             num += str(t)
         print(num)

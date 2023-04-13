@@ -6,6 +6,7 @@ namespace local {
 
     gmp_randstate_t __state;
     mpz_t zero, one, two;
+    mpz_t  u, rop1, rop2, t, i, c;
 
     pt_prov prov;
 
@@ -19,6 +20,12 @@ namespace local {
         mpz_init(prov.u);
         mpz_init(prov.rop1);
         mpz_init(prov.i);
+        mpz_init(c);
+        mpz_init(t);
+        mpz_init(u);
+        mpz_init(rop1);
+        mpz_init(rop2);
+        mpz_init(i);
     }
 
     void factor(const mpz_t &n, mpz_t &t, mpz_t &u) {
@@ -33,13 +40,7 @@ namespace local {
     }
 
     bool primality_test(mpz_t &n, mpz_t &a) {
-        mpz_t  u, rop1, rop2, t, i, c;
-        mpz_init(c);
-        mpz_init(t);
-        mpz_init(u);
-        mpz_init(rop1);
-        mpz_init(rop2);
-        mpz_init(i);
+
 
         // 'a' is a random number in the range [0, n-1]
         do {
