@@ -18,7 +18,7 @@ namespace local {
 
     void initialize_primality_env();
 
-    bool primality_test(mpz_t& n, mpz_t& w);
+    bool primality_test(mpz_t& n, mpz_t& a);
 }
 
 #endif

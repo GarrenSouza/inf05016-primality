@@ -41,12 +41,6 @@ namespace local {
 
     bool primality_test(mpz_t &n, mpz_t &a) {
 
-
-        // 'a' is a random number in the range [0, n-1]
-        do {
-            mpz_urandomm(a, __state, n);
-        } while (mpz_cmp_ui(a, 0) == 0);
-
         // gcd(a, n) != 1 test
         mpz_gcd(rop1, n, a);
         if (mpz_cmp(rop1, one) != 0)
